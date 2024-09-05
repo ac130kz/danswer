@@ -68,25 +68,3 @@ class APIKeyManager:
         )
         api_key_response.raise_for_status()
         return [TestAPIKey(**api_key) for api_key in api_key_response.json()]
-
-    @staticmethod
-    def verify(
-        api_key: TestAPIKey,
-        verify_deleted: bool = False,
-        user_performing_action: TestUser | None = None,
-    ) -> None:
-        retrieved_keys = APIKeyManager.get_all(
-            user_performing_action=user_performing_action
-        )
-        for key in retrieved_keys:
-            if key.api_key_id == api_key.api_key_id:
-                if verify_deleted:
-                    raise ValueError("API Key found when it should have been deleted")
-                if (
-                    key.api_key_name == api_key.api_key_name
-                    and key.api_key_role == api_key.api_key_role
-                ):
-                    return
-
-        if not verify_deleted:
-            raise Exception("API Key not found")

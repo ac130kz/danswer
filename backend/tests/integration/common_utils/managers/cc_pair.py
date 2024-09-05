@@ -154,31 +154,22 @@ class CCPairManager:
         return [ConnectorIndexingStatus(**cc_pair) for cc_pair in response.json()]
 
     @staticmethod
-    def verify(
-        cc_pair: TestCCPair,
-        verify_deleted: bool = False,
-        user_performing_action: TestUser | None = None,
-    ) -> None:
-        all_cc_pairs = CCPairManager.get_all(user_performing_action)
-        for retrieved_cc_pair in all_cc_pairs:
-            if retrieved_cc_pair.cc_pair_id == cc_pair.id:
-                if verify_deleted:
-                    # We assume that this check will be performed after the deletion is
-                    # already waited for
-                    raise ValueError(
-                        f"CC pair {cc_pair.id} found but should be deleted"
-                    )
-                if (
-                    retrieved_cc_pair.name == cc_pair.name
-                    and retrieved_cc_pair.connector.id == cc_pair.connector_id
-                    and retrieved_cc_pair.credential.id == cc_pair.credential_id
-                    and retrieved_cc_pair.public_doc == cc_pair.is_public
-                    and set(retrieved_cc_pair.groups) == set(cc_pair.groups)
-                ):
-                    return
+    def verify():
+        pass
 
-        if not verify_deleted:
-            raise ValueError(f"CC pair {cc_pair.id} not found")
+    @staticmethod
+    def get(
+        cc_pair_id: int,
+        user_performing_action: TestUser | None = None,
+    ) -> TestCCPair | None:
+        # TODO: make this hit the "/manage/admin/cc-pair/{cc_pair_id}" endpoint
+        # This will require a bit of refactoring work
+
+        cc_pairs = CCPairManager.get_all(user_performing_action)
+        for cc_pair in cc_pairs:
+            if cc_pair.cc_pair_id == cc_pair_id:
+                return cc_pair
+        return None
 
     @staticmethod
     def wait_for_deletion_completion(

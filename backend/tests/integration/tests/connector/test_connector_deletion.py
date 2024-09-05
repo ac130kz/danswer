@@ -119,10 +119,10 @@ def test_connector_deletion(reset: None, vespa_client: TestVespaClient) -> None:
     )
 
     # check that only connector 1 is deleted
-    CCPairManager.verify(
-        cc_pair=cc_pair_2,
-        user_performing_action=admin_user,
+    retrieved_cc_pair = CCPairManager.get(
+        cc_pair_id=cc_pair_1.id, user_performing_action=admin_user
     )
+    assert retrieved_cc_pair == cc_pair_1
 
     # validate document sets
     DocumentSetManager.verify(
@@ -282,16 +282,16 @@ def test_connector_deletion_for_overlapping_connectors(
     print("Connector 1 deleted")
 
     # check that only connector 1 is deleted
-    # TODO: check for the CC pair rather than the connector once the refactor is done
-    CCPairManager.verify(
-        cc_pair=cc_pair_1,
-        verify_deleted=True,
-        user_performing_action=admin_user,
+    retrieved_cc_pair_1 = CCPairManager.get(
+        cc_pair_id=cc_pair_1.id, user_performing_action=admin_user
     )
-    CCPairManager.verify(
-        cc_pair=cc_pair_2,
-        user_performing_action=admin_user,
+    assert retrieved_cc_pair_1 is None
+
+    # check that connector 2 is in the state we expect
+    retrieved_cc_pair_2 = CCPairManager.get(
+        cc_pair_id=cc_pair_2.id, user_performing_action=admin_user
     )
+    assert retrieved_cc_pair_2 == cc_pair_2
 
     # verify the document is not in any document sets
     # verify the document is only in user group 2

@@ -19,6 +19,25 @@ This means the flow is:
 """
 
 
+def _check_equality(
+    obj1: BaseModel, obj2: BaseModel, ignore_fields: list[str] = []
+) -> bool:
+    if not isinstance(obj2, obj1.__class__):
+        return False
+    for field in obj1.model_fields:
+        if field in ignore_fields:
+            continue
+        obj1_field = getattr(obj1, field)
+        obj2_field = getattr(obj2, field)
+        # Convert lists to sets for comparison
+        if isinstance(obj1_field, list) and isinstance(obj2_field, list):
+            obj1_field = set(obj1_field)
+            obj2_field = set(obj2_field)
+        if obj1_field != obj2_field:
+            return False
+    return True
+
+
 class TestAPIKey(BaseModel):
     api_key_id: int
     api_key_display: str
@@ -29,12 +48,18 @@ class TestAPIKey(BaseModel):
     user_id: UUID
     headers: dict
 
+    def __eq__(self, other: object) -> bool:
+        return _check_equality(self, other)
+
 
 class TestUser(BaseModel):
     id: str
     email: str
     password: str
     headers: dict
+
+    def __eq__(self, other: object) -> bool:
+        return _check_equality(self, other)
 
 
 class TestCredential(BaseModel):
@@ -46,6 +71,9 @@ class TestCredential(BaseModel):
     curator_public: bool
     groups: list[int]
 
+    def __eq__(self, other: object) -> bool:
+        return _check_equality(self, other)
+
 
 class TestConnector(BaseModel):
     id: int
@@ -56,10 +84,16 @@ class TestConnector(BaseModel):
     groups: list[int] | None = None
     is_public: bool | None = None
 
+    def __eq__(self, other: object) -> bool:
+        return _check_equality(self, other)
+
 
 class SimpleTestDocument(BaseModel):
     id: str
     content: str
+
+    def __eq__(self, other: object) -> bool:
+        return _check_equality(self, other)
 
 
 class TestCCPair(BaseModel):
@@ -69,7 +103,11 @@ class TestCCPair(BaseModel):
     credential_id: int
     is_public: bool
     groups: list[int]
+    doc_set_ids: list[int]
     documents: list[SimpleTestDocument] = Field(default_factory=list)
+
+    def __eq__(self, other: object) -> bool:
+        return _check_equality(self, other, ignore_fields=["documents"])
 
 
 class TestUserGroup(BaseModel):
@@ -77,6 +115,9 @@ class TestUserGroup(BaseModel):
     name: str
     user_ids: list[str]
     cc_pair_ids: list[int]
+
+    def __eq__(self, other: object) -> bool:
+        return _check_equality(self, other)
 
 
 class TestLLMProvider(BaseModel):
@@ -90,6 +131,9 @@ class TestLLMProvider(BaseModel):
     api_base: str | None = None
     api_version: str | None = None
 
+    def __eq__(self, other: object) -> bool:
+        return _check_equality(self, other)
+
 
 class TestDocumentSet(BaseModel):
     id: int
@@ -100,6 +144,9 @@ class TestDocumentSet(BaseModel):
     is_up_to_date: bool
     users: list[str] = Field(default_factory=list)
     groups: list[int] = Field(default_factory=list)
+
+    def __eq__(self, other: object) -> bool:
+        return _check_equality(self, other)
 
 
 class TestPersona(BaseModel):
@@ -118,3 +165,6 @@ class TestPersona(BaseModel):
     llm_model_version_override: str | None
     users: list[str]
     groups: list[int]
+
+    def __eq__(self, other: object) -> bool:
+        return _check_equality(self, other)
