@@ -829,6 +829,7 @@ def monitor_vespa_sync() -> None:
                 monitor_document_set_taskset(key_bytes, r, db_session)
 
             for key_bytes in r.scan_iter(RedisUserGroup.FENCE_PREFIX + "*"):
+                print(key_bytes)
                 monitor_usergroup_taskset(key_bytes, r, db_session)
 
         #
