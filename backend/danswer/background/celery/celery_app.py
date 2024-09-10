@@ -744,6 +744,7 @@ def monitor_document_set_taskset(
 def monitor_usergroup_taskset(key_bytes: bytes, r: Redis, db_session: Session) -> None:
     key = key_bytes.decode("utf-8")
     usergroup_id = RedisUserGroup.get_id_from_fence_key(key)
+    raise Exception("I am crashing")
     if not usergroup_id:
         task_logger.warning("Could not parse usergroup id from {key}")
         return
