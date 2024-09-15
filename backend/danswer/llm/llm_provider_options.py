@@ -42,6 +42,10 @@ OPEN_AI_MODEL_NAMES = [
     "gpt-3.5-turbo-0613",
     "gpt-3.5-turbo-16k-0613",
     "gpt-3.5-turbo-0301",
+    "o1-mini",
+    "o1-mini-2024-09-12",
+    "o1-preview",
+    "o1-preview-2024-09-12",
 ]
 
 BEDROCK_PROVIDER_NAME = "bedrock"
