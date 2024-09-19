@@ -98,7 +98,7 @@ export default function Page() {
         title="Add Connector"
         farRightElement={
           <Link href="/admin/indexing/status">
-            <Button color="green" size="xs">
+            <Button className="  bg-[#FC853E]" size="xs">
               See Connectors
             </Button>
           </Link>
