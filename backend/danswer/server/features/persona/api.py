@@ -217,7 +217,9 @@ def list_personas(
     db_session: Session = Depends(get_session),
     include_deleted: bool = False,
 ) -> list[PersonaSnapshot]:
-    return [
+    print("getting perosnas")
+
+    personas = [
         PersonaSnapshot.from_model(persona)
         for persona in get_personas(
             user=user,
@@ -227,6 +229,8 @@ def list_personas(
             joinedload_all=True,
         )
     ]
+    print(len(personas))
+    return personas
 
 
 @basic_router.get("/{persona_id}")
