@@ -1669,7 +1669,6 @@ export function ChatPage({
     mostVisibleMessageId: null,
   };
 
-  console.log(availableAssistants);
   useEffect(() => {
     const includes = checkAnyAssistantHasSearch(
       messageHistory,
