@@ -1048,6 +1048,10 @@ export function AssistantEditor({
                         Starter Messages (Optional){" "}
                       </div>
                     </div>
+                    <SubLabel>
+                      Add pre-defined messages to help users get started. Only
+                      the first 4 will be displayed.
+                    </SubLabel>
                     <FieldArray
                       name="starter_messages"
                       render={(
