@@ -26,11 +26,8 @@ export function _CompletedWelcomeFlowDummyComponent() {
 
 export function _WelcomeModal({ user }: { user: User | null }) {
   const router = useRouter();
-  const [selectedFlow, setSelectedFlow] = useState<null | "search" | "chat">(
-    null
-  );
+
   const [canBegin, setCanBegin] = useState(false);
-  const [apiKeyVerified, setApiKeyVerified] = useState<boolean>(false);
   const [providerOptions, setProviderOptions] = useState<
     WellKnownLLMProviderDescriptor[]
   >([]);
@@ -43,17 +40,23 @@ export function _WelcomeModal({ user }: { user: User | null }) {
 
   useEffect(() => {
     async function fetchProviderInfo() {
-      const { providers, options, defaultCheckSuccessful } =
-        await checkLlmProvider(user);
-      setApiKeyVerified(providers.length > 0 && defaultCheckSuccessful);
+      const { options } = await checkLlmProvider(user);
       setProviderOptions(options);
     }
 
     fetchProviderInfo();
   }, []);
 
+  // We should always have options
+  if (providerOptions.length === 0) {
+    return null;
+  }
+
   return (
-    <Modal title={"Welcome to Danswer!"} width="w-full max-w-3xl">
+    <Modal
+      title={"Welcome to Danswer!"}
+      width="w-full max-h-[900px] overflow-y-scroll max-w-3xl"
+    >
       <div>
         <Text className="mb-4">
           Danswer brings all your company&apos;s knowledge to your fingertips,
